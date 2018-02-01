@@ -7,6 +7,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace Bnet
 {
@@ -15,6 +16,7 @@ namespace Bnet
 
         static IWebDriver Chrome;
         static ChromeOptions opt;
+        static ChromeDriverService driverService;
 
         static IWebElement submit;
         static IWebElement amount;
@@ -41,7 +43,10 @@ namespace Bnet
             opt.AddArgument("--user-data-dir=C:/Users/" + output + "/AppData/Local/Google/Chrome/User Data/Default");
             opt.AddArguments("disable-infobars");
 
-            Chrome = new ChromeDriver(@"C:\Program Files (x86)\Google\Chrome\Application", opt);
+            driverService = ChromeDriverService.CreateDefaultService(@"C:\Program Files (x86)\Google\Chrome\Application");
+            driverService.HideCommandPromptWindow = true;
+
+            Chrome = new ChromeDriver(driverService, opt);
 
 
     }
