@@ -8,6 +8,8 @@ using OpenQA.Selenium.Chrome;
 using Microsoft.Win32;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Net;
+using System.Net.NetworkInformation;
 
 namespace Bnet
 {
@@ -84,6 +86,29 @@ namespace Bnet
         public static void Quit()
         {
             Chrome.Close();
+        }
+
+        public async Task<string> GetToMac(string param)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(".../register/MAC_ADDRESS" + param);
+            request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
+
+            using (HttpWebResponse response = (HttpWebResponse)await request.GetResponseAsync())
+            using (Stream stream = response.GetResponseStream())
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return await reader.ReadToEndAsync();
+            }
+        }
+
+        public string GetMacAddr()
+        {
+            string firstMacAddress = NetworkInterface
+                .GetAllNetworkInterfaces()
+                .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+                .Select(nic => nic.GetPhysicalAddress().ToString())
+                .FirstOrDefault();
+            return firstMacAddress;
         }
         /*
         public static string GetCurrentURL()
