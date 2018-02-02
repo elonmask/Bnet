@@ -80,6 +80,7 @@ namespace Bnet
             }
 
             Console.WriteLine("Done...");
+            Quit();
 
         }
         
